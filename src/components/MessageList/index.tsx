@@ -1,3 +1,5 @@
+import { api } from '../../services/api';
+
 import styles from './styles.module.scss';
 import logoimage from '../../assets/logo.svg';
 
