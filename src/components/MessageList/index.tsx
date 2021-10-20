@@ -1,41 +1,52 @@
 import { api } from '../../services/api';
-
 import styles from './styles.module.scss';
 import logoimage from '../../assets/logo.svg';
+import { useEffect, useState } from 'react';
+
+type Message = {
+    id: string,
+    text: string,
+    user: {
+        name: string,
+        avatar_url: string,
+
+    }
+}
 
 export function MessageList() {
+
+    const [messages, setMessages] = useState<Message[]>([])
+
+
+    useEffect(() => {
+        api.get<Message[]>('messages/last3').then(response => {
+            setMessages(response.data);
+        })
+
+    }, [])
+
     return (
         <div className={styles.messageListWrapper}>
             <img src={logoimage} alt="DoWhile 2021" />
 
             <ul className={styles.messageList}>
-                <li className={styles.message}>
-                    <p className={styles.messageContent}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
-                    <div className={styles.messageUser}>
-                        <div className={styles.userImage}>
-                            <img src="https://github.com/programecompedro.png" alt="ProgramecomPedro" />
-                        </div>
-                        <span>Pedrão Miguel</span>
-                    </div>
-                </li>
-                <li className={styles.message}>
-                    <p className={styles.messageContent}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
-                    <div className={styles.messageUser}>
-                        <div className={styles.userImage}>
-                            <img src="https://github.com/programecompedro.png" alt="ProgramecomPedro" />
-                        </div>
-                        <span>Pedrão Miguel</span>
-                    </div>
-                </li>
-                <li className={styles.message}>
-                    <p className={styles.messageContent}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
-                    <div className={styles.messageUser}>
-                        <div className={styles.userImage}>
-                            <img src="https://github.com/programecompedro.png" alt="ProgramecomPedro" />
-                        </div>
-                        <span>Pedrão Miguel</span>
-                    </div>
-                </li>
+
+
+                {messages.map(message => {
+                    return (
+                        <li key={message.id} className={styles.message}>
+                            <p className={styles.messageContent}>{message.text}</p>
+                            <div className={styles.messageUser}>
+                                <div className={styles.userImage}>
+                                    <img src={message.user.avatar_url} alt={message.user.name} />
+                                </div>
+                                <span>{message.user.name}</span>
+                            </div>
+                        </li>
+                    )
+                })}
+
+
             </ul>
         </div>
     )
